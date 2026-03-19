@@ -175,29 +175,143 @@ nav .nav-links a:hover::after { width: 100%; }
 .hero-title .line {
   display: block;
   opacity: 0;
-  transform: translateY(40px) rotate(-1deg);
-  animation: riseIn 0.8s ease forwards;
+  transform: translateY(50px) rotate(-2deg) scale(0.97);
+  animation: riseIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 .hero-title .line:nth-child(1) { animation-delay: 0.2s; }
 .hero-title .line:nth-child(2) { animation-delay: 0.4s; }
 .hero-title .line:nth-child(3) { animation-delay: 0.6s; }
 
 @keyframes riseIn {
-  to { opacity: 1; transform: translateY(0) rotate(0deg); }
+  to { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
 }
 
-/* hand-drawn underline */
+/* hand-drawn underline — draw on */
 .hero-title .underline-sketch {
   position: absolute;
   bottom: -8px;
   left: 0;
   width: 100%;
   height: 12px;
-  opacity: 0;
-  animation: fadeIn 0.5s ease 1.2s forwards;
+}
+.hero-title .underline-sketch path {
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  stroke-width: 3;
+  opacity: 0.7;
+  animation: drawLine 0.8s ease forwards 1.2s;
+}
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* Hero decorative frame — draws itself behind text */
+.hero-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-55%, -48%);
+  width: clamp(400px, 60vw, 800px);
+  height: clamp(280px, 40vw, 500px);
+  z-index: -1;
+  pointer-events: none;
+}
+.hero-frame path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.hero-frame .frame-stroke-1 {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  opacity: 0.08;
+  stroke-dasharray: 2200;
+  stroke-dashoffset: 2200;
+  animation: drawLine 2s ease forwards 0.1s;
+}
+.hero-frame .frame-stroke-2 {
+  stroke: var(--red);
+  stroke-width: 1;
+  opacity: 0.12;
+  stroke-dasharray: 2200;
+  stroke-dashoffset: 2200;
+  animation: drawLine 2.2s ease forwards 0.3s;
 }
 
-@keyframes fadeIn { to { opacity: 1; } }
+/* Hero doodle annotations */
+.hero-doodle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-doodle path, .hero-doodle circle, .hero-doodle line {
+  fill: none;
+  stroke: var(--red);
+  stroke-linecap: round;
+  stroke-width: 2;
+  opacity: 0.35;
+}
+.hero-doodle-arrow {
+  right: 18%;
+  bottom: 28%;
+  width: 60px;
+  height: 60px;
+}
+.hero-doodle-arrow path {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: drawLine 0.6s ease forwards 2s;
+}
+.hero-doodle-star {
+  left: 38%;
+  top: 22%;
+  width: 32px;
+  height: 32px;
+}
+.hero-doodle-star path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawLine 0.5s ease forwards 2.4s;
+}
+.hero-doodle-circle {
+  right: 30%;
+  top: 18%;
+  width: 50px;
+  height: 50px;
+}
+.hero-doodle-circle circle {
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+  animation: drawLine 0.6s ease forwards 1.8s;
+}
+
+/* Hero sticky note */
+.hero-note {
+  position: absolute;
+  bottom: 18%;
+  right: 8%;
+  background: var(--manila);
+  border: 1px solid var(--manila-dark);
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: rgba(26,26,26,0.5);
+  transform: rotate(3deg);
+  box-shadow: 2px 2px 6px var(--shadow);
+  opacity: 0;
+  animation: driftIn 0.8s ease 2.2s forwards;
+  z-index: 1;
+}
+.hero-note::before {
+  content: '';
+  position: absolute;
+  top: -6px; left: 18px;
+  width: 38px; height: 13px;
+  background: var(--tape);
+  border: 1px solid rgba(200,190,150,0.4);
+  transform: rotate(-1deg);
+}
 
 .hero-sub {
   margin-top: 32px;
@@ -241,14 +355,18 @@ nav .nav-links a:hover::after { width: 100%; }
 
 .hero-scatter {
   position: absolute;
-  right: 5%;
-  top: 30%;
-  width: 200px;
+  right: 3%;
+  top: 20%;
+  width: clamp(200px, 22vw, 340px);
   opacity: 0;
-  animation: driftIn 1s ease 1.6s forwards;
+  animation: driftIn 1s ease 1.6s forwards, heroFloat 6s ease-in-out 2.6s infinite;
   transform: rotate(5deg);
   filter: drop-shadow(4px 4px 12px var(--shadow));
   pointer-events: none;
+}
+@keyframes heroFloat {
+  0%, 100% { transform: rotate(5deg) translateY(0); }
+  50% { transform: rotate(5deg) translateY(-14px); }
 }
 
 @keyframes driftIn {
@@ -717,11 +835,91 @@ footer img {
   transform: translateY(24px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
-
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Slide from left — section labels */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale up — film video, images */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Page turn — manila cards */
+.reveal-page {
+  opacity: 0;
+  transform: perspective(800px) rotateY(-6deg) translateX(-15px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal-page.visible {
+  opacity: 1;
+  transform: perspective(800px) rotateY(0) translateX(0);
+}
+
+/* Scroll-triggered highlights */
+.highlight {
+  background: linear-gradient(180deg, transparent 55%, rgba(232,212,77,0) 55%);
+  padding: 0 4px;
+  transition: background 0.8s ease 0.3s;
+}
+.visible .highlight,
+.reveal.visible .highlight,
+.reveal-left.visible .highlight {
+  background: linear-gradient(180deg, transparent 55%, rgba(232,212,77,0.35) 55%);
+}
+
+/* Envelope flap */
+.env-flap {
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--manila-dark), var(--manila));
+  clip-path: polygon(0 100%, 50% 0%, 100% 100%);
+  transform-origin: bottom center;
+  transition: transform 0.7s ease 0.3s, opacity 0.7s ease 0.3s;
+  z-index: 2;
+}
+.project-envelope.visible .env-flap {
+  transform: rotateX(180deg);
+  opacity: 0;
+}
+
+/* Chapter marker */
+.chapter-marker {
+  position: fixed;
+  left: 42px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  opacity: 0;
+  z-index: 3;
+  transition: opacity 0.4s, transform 0.4s;
+  pointer-events: none;
+}
+.chapter-marker.visible {
+  opacity: 0.4;
+}
+@media (max-width: 768px) { .chapter-marker { display: none; } }
 
 /* ========== CURSOR TRAIL (ink splatters) ========== */
 .ink-dot {
@@ -770,11 +968,7 @@ footer img {
   nav .nav-links a { font-size: 11px; }
 }
 
-/* yellow highlight */
-.highlight {
-  background: linear-gradient(180deg, transparent 55%, rgba(232,212,77,0.35) 55%);
-  padding: 0 4px;
-}
+/* yellow highlight — now animated via scroll reveal */
 
 /* ========== FILM / DOCUMENTARY SECTION ========== */
 .film {
@@ -1034,6 +1228,11 @@ footer img {
     padding-top: 80px;
   }
   .hero-scatter { display: none; }
+  .hero-frame { display: none; }
+  .hero-note { display: none; }
+  .hero-doodle-arrow { display: none; }
+  .hero-doodle-circle { display: none; }
+  .hero-doodle-star { right: 10px; top: 18%; width: 24px; }
   .hero-sub { font-size: 13px; max-width: 100%; }
   .hero-stamp { margin-top: 32px; }
 
@@ -1098,6 +1297,19 @@ footer img {
   .service-card { padding: 24px 20px; }
   .project-envelope { padding: 24px 20px; }
 }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal, .reveal-left, .reveal-scale, .reveal-page, .project-envelope {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -1126,19 +1338,41 @@ footer img {
   </ul>
 </nav>
 
+<div class="chapter-marker" id="chapter-marker">01</div>
+
 <!-- Hero -->
 <section class="hero content">
+  <!-- Hand-drawn frame that draws itself -->
+  <svg class="hero-frame" viewBox="0 0 800 500" fill="none">
+    <path class="frame-stroke-1" d="M 30 40 C 50 32, 250 18, 400 25 S 750 34, 770 45 C 778 70, 775 180, 772 250 S 770 420, 765 460 C 740 468, 500 478, 400 475 S 60 465, 35 458 C 28 430, 30 280, 32 180 Z"/>
+    <path class="frame-stroke-2" d="M 35 45 C 55 36, 260 22, 405 28 S 745 38, 765 50 C 773 75, 770 185, 768 255 S 766 415, 760 455 C 735 463, 495 473, 395 470 S 55 460, 38 452 C 32 425, 34 275, 36 175 Z"/>
+  </svg>
+
   <h1 class="hero-title">
     <span class="line">feels</span>
     <span class="line">like</span>
     <span class="line">home</span>
     <svg class="underline-sketch" viewBox="0 0 400 12" fill="none">
-      <path d="M2 8 C 60 2, 120 12, 180 6 S 300 2, 398 9" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+      <path d="M2 8 C 60 2, 120 12, 180 6 S 300 2, 398 9" stroke="#c0392b" stroke-linecap="round" fill="none"/>
     </svg>
   </h1>
   <p class="hero-sub">publishing company / community education / sensible solutions — building honest creative narratives that feel personal and connected.</p>
   <a href="#contact" class="hero-stamp">let's work together</a>
   <img class="hero-scatter" src="assets/images/VINYL-GRAPHIC-ANTITHESIS-02.png" alt="collateral">
+
+  <!-- Doodle annotations -->
+  <svg class="hero-doodle hero-doodle-arrow" viewBox="0 0 60 60" fill="none">
+    <path d="M 8 52 C 15 30, 28 15, 52 10 M 42 6 L 52 10 L 48 20"/>
+  </svg>
+  <svg class="hero-doodle hero-doodle-star" viewBox="0 0 32 32" fill="none">
+    <path d="M 16 2 L 18 12 L 28 12 L 20 18 L 23 28 L 16 22 L 9 28 L 12 18 L 4 12 L 14 12 Z"/>
+  </svg>
+  <svg class="hero-doodle hero-doodle-circle" viewBox="0 0 50 50" fill="none">
+    <circle cx="25" cy="25" r="20"/>
+  </svg>
+
+  <!-- Sticky note -->
+  <div class="hero-note">providence, ri</div>
 </section>
 
 <!-- Marquee -->
@@ -1169,13 +1403,14 @@ footer img {
 
 <!-- Work -->
 <section class="work content" id="work">
-  <div class="reveal">
+  <div class="reveal-left">
     <span class="section-label">selected work</span>
     <h2 class="section-heading">do not discard</h2>
   </div>
 
   <!-- Project 1: PYNRS x Brooks -->
   <div class="project-envelope" style="--rot: -0.5deg;">
+    <div class="env-flap"></div>
     <span class="env-corner">flh.</span>
     <div class="do-not-discard">do not discard</div>
     <h3>PYNRS x Brooks Hyperion Max 3</h3>
@@ -1200,6 +1435,7 @@ footer img {
 
   <!-- Project 2: Best Kept Secret -->
   <div class="project-envelope" style="--rot: 0.3deg;">
+    <div class="env-flap"></div>
     <span class="env-corner">flh.</span>
     <div class="do-not-discard">do not discard</div>
     <h3>best kept secret &mdash; short documentary</h3>
@@ -1224,12 +1460,12 @@ footer img {
 
 <!-- Best Kept Secret Documentary -->
 <section class="film content" id="film">
-  <div class="reveal">
+  <div class="reveal-left">
     <span class="section-label">featured project</span>
     <h2 class="section-heading">best kept secret</h2>
   </div>
 
-  <div class="film-video-wrap reveal">
+  <div class="film-video-wrap reveal-scale">
     <div class="film-video">
       <iframe src="https://www.youtube.com/embed/BA8CTjJPsfw" title="Best Kept Secret - Documentary" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
@@ -1323,38 +1559,38 @@ footer img {
 
 <!-- Services -->
 <section class="services content" id="services">
-  <div class="reveal">
+  <div class="reveal-left">
     <span class="section-label">what we do</span>
     <h2 class="section-heading">the <span class="highlight">good stuff</span></h2>
   </div>
 
   <div class="services-grid">
-    <div class="service-card reveal" style="--rot: -1.2deg;">
+    <div class="service-card reveal-page" style="--rot: -1.2deg;">
       <span class="service-num">01</span>
       <h3>creative direction</h3>
       <p>We shape the vision. From initial concept to final execution, we build creative frameworks that feel authentic and hit different.</p>
     </div>
-    <div class="service-card reveal" style="--rot: 0.8deg;">
+    <div class="service-card reveal-page" style="--rot: 0.8deg;">
       <span class="service-num">02</span>
       <h3>brand communications</h3>
       <p>Your story, told right. We craft brand narratives that connect with real people — no fluff, no corporate speak, just honest work.</p>
     </div>
-    <div class="service-card reveal" style="--rot: -0.5deg;">
+    <div class="service-card reveal-page" style="--rot: -0.5deg;">
       <span class="service-num">03</span>
       <h3>product design</h3>
       <p>Tangible creative output. Packaging, print, digital assets — designed with intention and built to stand out on any shelf or screen.</p>
     </div>
-    <div class="service-card reveal" style="--rot: 1deg;">
+    <div class="service-card reveal-page" style="--rot: 1deg;">
       <span class="service-num">04</span>
       <h3>marketing strategy</h3>
       <p>We don't just make it look good — we make sure it reaches the right people. Strategy rooted in culture and community.</p>
     </div>
-    <div class="service-card reveal" style="--rot: -0.8deg;">
+    <div class="service-card reveal-page" style="--rot: -0.8deg;">
       <span class="service-num">05</span>
       <h3>launch activation</h3>
       <p>From pop-ups to digital rollouts, we bring projects to life with events and activations that create real moments.</p>
     </div>
-    <div class="service-card reveal" style="--rot: 0.6deg;">
+    <div class="service-card reveal-page" style="--rot: 0.6deg;">
       <span class="service-num">06</span>
       <h3>publishing + editorial</h3>
       <p>Every page is a portal. Multi-contributor print and digital publications organized like the textbook we all wish we had.</p>
@@ -1364,7 +1600,7 @@ footer img {
 
 <!-- About -->
 <section class="about content" id="about">
-  <div class="reveal">
+  <div class="reveal-left">
     <span class="section-label">about</span>
     <h2 class="section-heading">our goal</h2>
   </div>
@@ -1414,7 +1650,7 @@ footer img {
 
 <!-- Contact -->
 <section class="contact content" id="contact">
-  <div class="reveal">
+  <div class="reveal-left">
     <span class="section-label" style="justify-content: center;">get in touch</span>
     <h2 class="section-heading" style="text-align: center;">hit our line</h2>
   </div>
@@ -1446,8 +1682,8 @@ for (let i = 0; i < 30; i++) {
   holesContainer.appendChild(hole);
 }
 
-// Scroll reveal
-const reveals = document.querySelectorAll('.reveal, .project-envelope');
+// Scroll reveal — all reveal types
+const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-scale, .reveal-page, .project-envelope');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -1501,18 +1737,73 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// Parallax on envelopes on scroll (subtle)
+// Scroll-driven effects (rAF throttled)
+const heroTitle = document.querySelector('.hero-title');
+const heroSub = document.querySelector('.hero-sub');
+const heroStamp = document.querySelector('.hero-stamp');
+const chapterMarker = document.getElementById('chapter-marker');
+const sections = [
+  { el: document.querySelector('.hero'), ch: '01' },
+  { el: document.getElementById('work'), ch: '02' },
+  { el: document.getElementById('film'), ch: '03' },
+  { el: document.getElementById('services'), ch: '04' },
+  { el: document.getElementById('about'), ch: '05' },
+  { el: document.getElementById('contact'), ch: '06' }
+];
+
+let ticking = false;
 window.addEventListener('scroll', () => {
-  const envelopes = document.querySelectorAll('.project-envelope');
-  envelopes.forEach((env, i) => {
-    const rect = env.getBoundingClientRect();
-    const center = rect.top + rect.height / 2;
-    const offset = (window.innerHeight / 2 - center) * 0.008;
-    const baseRot = parseFloat(env.style.getPropertyValue('--rot')) || 0;
-    if (env.classList.contains('visible')) {
-      env.style.transform = `translateY(0) rotate(${baseRot + offset}deg)`;
-    }
-  });
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const scrollY = window.scrollY;
+      const vh = window.innerHeight;
+
+      // Hero parallax exit
+      if (scrollY < vh) {
+        const progress = scrollY / (vh * 0.7);
+        const opacity = Math.max(0, 1 - progress);
+        const yOffset = scrollY * 0.2;
+        heroTitle.style.transform = `translateY(${yOffset}px)`;
+        heroTitle.style.opacity = opacity;
+        heroSub.style.opacity = opacity;
+        heroStamp.style.opacity = opacity;
+      }
+
+      // Envelope parallax
+      document.querySelectorAll('.project-envelope').forEach(env => {
+        const rect = env.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const offset = (vh / 2 - center) * 0.008;
+        const baseRot = parseFloat(env.style.getPropertyValue('--rot')) || 0;
+        if (env.classList.contains('visible')) {
+          env.style.transform = `translateY(0) rotate(${baseRot + offset}deg)`;
+        }
+      });
+
+      // Marquee scroll opacity
+      document.querySelectorAll('.marquee-wrap').forEach(wrap => {
+        const rect = wrap.getBoundingClientRect();
+        const progress = 1 - Math.abs((rect.top + rect.height / 2 - vh / 2) / (vh * 0.6));
+        wrap.style.opacity = Math.max(0.25, Math.min(1, progress));
+      });
+
+      // Chapter marker
+      if (chapterMarker) {
+        let current = '01';
+        for (let i = sections.length - 1; i >= 0; i--) {
+          if (sections[i].el && sections[i].el.getBoundingClientRect().top < vh * 0.5) {
+            current = sections[i].ch;
+            break;
+          }
+        }
+        chapterMarker.textContent = current;
+        chapterMarker.classList.toggle('visible', scrollY > 100);
+      }
+
+      ticking = false;
+    });
+    ticking = true;
+  }
 });
 </script>
 </body>
