@@ -33,7 +33,7 @@
 
 :root {
   --cream: #f5f0e8;
-  --ink: #1a1a1a;
+  --ink: #2e2b28;
   --red: #c0392b;
   --blue-grid: #b8cfe0;
   --yellow: #e8d44d;
@@ -170,18 +170,31 @@ nav .nav-links a:hover::after { width: 100%; }
   letter-spacing: -0.03em;
   text-transform: lowercase;
   position: relative;
+  filter: url(#crayon-texture);
 }
 
 .hero-title .line {
   display: block;
-  opacity: 0;
-  transform: translateY(50px) rotate(-2deg) scale(0.97);
-  animation: riseIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  -webkit-mask-image: linear-gradient(90deg, #000 50%, transparent 50%);
+  mask-image: linear-gradient(90deg, #000 50%, transparent 50%);
+  -webkit-mask-size: 220% 100%;
+  mask-size: 220% 100%;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  animation: crayonDraw 1s ease forwards;
 }
 .hero-title .line:nth-child(1) { animation-delay: 0.2s; }
-.hero-title .line:nth-child(2) { animation-delay: 0.4s; }
-.hero-title .line:nth-child(3) { animation-delay: 0.6s; }
+.hero-title .line:nth-child(2) { animation-delay: 0.6s; }
+.hero-title .line:nth-child(3) { animation-delay: 1s; }
 
+@keyframes crayonDraw {
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+}
+
+/* Keep riseIn for other uses */
 @keyframes riseIn {
   to { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
 }
@@ -199,7 +212,7 @@ nav .nav-links a:hover::after { width: 100%; }
   stroke-dashoffset: 420;
   stroke-width: 3;
   opacity: 0.7;
-  animation: drawLine 0.8s ease forwards 1.2s;
+  animation: drawLine 0.8s ease forwards 1.8s;
 }
 @keyframes drawLine { to { stroke-dashoffset: 0; } }
 @keyframes fadeIn { to { opacity: 1; } }
@@ -322,7 +335,7 @@ nav .nav-links a:hover::after { width: 100%; }
   max-width: 400px;
   line-height: 1.7;
   opacity: 0;
-  animation: fadeIn 0.6s ease 1s forwards;
+  animation: fadeIn 0.6s ease 2.2s forwards;
 }
 
 .hero-stamp {
@@ -337,7 +350,7 @@ nav .nav-links a:hover::after { width: 100%; }
   color: var(--red);
   transform: rotate(-3deg);
   opacity: 0;
-  animation: stampIn 0.4s ease 1.4s forwards;
+  animation: stampIn 0.4s ease 2.6s forwards;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
@@ -359,10 +372,22 @@ nav .nav-links a:hover::after { width: 100%; }
   top: 20%;
   width: clamp(200px, 22vw, 340px);
   opacity: 0;
-  animation: driftIn 1s ease 1.6s forwards, heroFloat 6s ease-in-out 2.6s infinite;
+  animation: driftIn 1s ease 0.8s forwards, sketchReveal 2s ease 0.8s forwards, heroFloat 6s ease-in-out 2.8s infinite;
   transform: rotate(5deg);
-  filter: drop-shadow(4px 4px 12px var(--shadow));
+  filter: drop-shadow(4px 4px 12px var(--shadow)) url(#crayon-texture);
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(160deg, #000 50%, transparent 50%);
+  mask-image: linear-gradient(160deg, #000 50%, transparent 50%);
+  -webkit-mask-size: 350% 350%;
+  mask-size: 350% 350%;
+  -webkit-mask-position: 100% 100%;
+  mask-position: 100% 100%;
+}
+@keyframes sketchReveal {
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
 }
 @keyframes heroFloat {
   0%, 100% { transform: rotate(5deg) translateY(0); }
@@ -406,6 +431,7 @@ nav .nav-links a:hover::after { width: 100%; }
   line-height: 1.1;
   text-transform: lowercase;
   margin-bottom: 32px;
+  filter: url(#crayon-texture);
 }
 
 /* ========== SERVICES ========== */
@@ -1313,6 +1339,14 @@ footer img {
 </style>
 </head>
 <body>
+
+<!-- SVG filter for crayon texture -->
+<svg style="position:absolute;width:0;height:0;">
+  <filter id="crayon-texture">
+    <feTurbulence type="turbulence" baseFrequency="0.035" numOctaves="4" result="noise" seed="2"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
 <!-- Grid paper background -->
 <div class="grid-bg"></div>
