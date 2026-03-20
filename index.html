@@ -1250,16 +1250,31 @@ footer img {
 
   /* Hero */
   .hero {
-    min-height: 85vh;
-    padding-top: 80px;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: 0;
+    padding-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero .content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-title {
+    text-align: center;
+    font-size: clamp(5rem, 24vw, 8rem);
   }
   .hero-scatter { display: none; }
   .hero-frame { display: none; }
   .hero-note { display: none; }
   .hero-doodle-arrow { display: none; }
   .hero-doodle-circle { display: none; }
-  .hero-doodle-star { right: 10px; top: 18%; width: 24px; }
-  .hero-sub { font-size: 13px; max-width: 100%; }
+  .hero-doodle-star { display: none; }
+  .hero-sub { font-size: 14px; max-width: 90%; margin-left: auto; margin-right: auto; text-align: center; margin-top: 24px; }
   .hero-stamp { margin-top: 32px; }
 
   /* Grid bg decorations */
@@ -1318,7 +1333,7 @@ footer img {
 
 /* Small phones */
 @media (max-width: 400px) {
-  .hero-title { font-size: clamp(2.5rem, 14vw, 4rem); }
+  .hero-title { font-size: clamp(4.5rem, 22vw, 7rem); }
   nav .nav-links a { font-size: 18px; }
   .service-card { padding: 24px 20px; }
   .project-envelope { padding: 24px 20px; }
